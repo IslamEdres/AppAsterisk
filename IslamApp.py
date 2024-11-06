@@ -12,14 +12,13 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 # ---------------_____----------------------------------------------
-# 2- دالة للتحقق من قاعدة البيانات والجداول وإنشائها إذا لزم الأمر
+# 2-Make Sure About the DD if not crest
 
 
 def initialize_database():
     conn = sqlite3.connect('calls_data.db')
     cursor = conn.cursor()
 
-    # تحقق من وجود جدول 'servers' وإذا لم يكن موجودًا، أنشئه
     cursor.execute('''CREATE TABLE IF NOT EXISTS servers (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         server_name TEXT,
@@ -28,7 +27,6 @@ def initialize_database():
                         username TEXT,
                         password TEXT)''')
 
-    # تحقق من وجود جدول 'your_report_table' وإذا لم يكن موجودًا، أنشئه
     cursor.execute('''CREATE TABLE IF NOT EXISTS your_report_table (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         server_name TEXT,
@@ -42,7 +40,6 @@ def initialize_database():
     conn.close()
 
 
-# استدعاء دالة `initialize_database` عند بدء التشغيل
 initialize_database()
 
 # 3- Function to monitor the selected servers
