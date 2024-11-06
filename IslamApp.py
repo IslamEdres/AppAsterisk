@@ -1,4 +1,6 @@
 # 1- Imports
+
+import sys
 import sqlite3
 import threading
 import paramiko
@@ -12,7 +14,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 # ---------------_____----------------------------------------------
-# 2-Make Sure About the DD if not crest
+# 1-Make Sure About the DD if not crest
 
 
 def initialize_database():
@@ -26,6 +28,9 @@ def initialize_database():
                         port INTEGER,
                         username TEXT,
                         password TEXT)''')
+    cursor.execute('''INSERT INTO servers (server_name, server_ip, port, username, password)
+                    SELECT 'Default Server', '192.168.1.1', 22, 'admin', 'password'
+                    WHERE NOT EXISTS (SELECT 1 FROM servers)''')
 
     cursor.execute('''CREATE TABLE IF NOT EXISTS your_report_table (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -36,13 +41,17 @@ def initialize_database():
                         date_column DATE,
                         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)''')
 
+    cursor.execute('''INSERT INTO your_report_table (server_name, inbound_calls, outbound_calls, pri_lines, date_column)
+                    SELECT 'Default Server', 10, 5, 2, DATE('now')
+                    WHERE NOT EXISTS (SELECT 1 FROM your_report_table)''')
+
     conn.commit()
     conn.close()
 
 
 initialize_database()
 
-# 3- Function to monitor the selected servers
+# 2- Function to monitor the selected servers
 
 
 def monitor_servers(live=False):
