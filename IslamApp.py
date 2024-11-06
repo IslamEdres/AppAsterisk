@@ -84,9 +84,8 @@ def monitor_servers(live=False):
 
             def run_on_server(server_name, server_ip):
                 result = execute_remote_script(
-                    server_ip, port, username, password, '/home/islam/PRI-TIME/bash-dahdicalls.sh')
-                result_text.insert(tk.END, f"Data for {
-                                   server_name} ({server_ip}):\n{result}\n\n")
+                server_ip, port, username, password, '/home/islam/PRI-TIME/bash-dahdicalls.sh')
+                result_text.insert(tk.END, f"Data for {server_name} ({server_ip}):\n{result}\n\n")
 
                 # Save result to the database
                 save_result_to_db(server_name, result)
@@ -219,8 +218,7 @@ def add_server():
         # If connection is successful, add server to the database
         conn = sqlite3.connect('calls_data.db')
         cursor = conn.cursor()
-        cursor.execute('INSERT INTO servers (server_name, server_ip, port, username, password) VALUES (?, ?, ?, ?, ?)',
-                       (server_name, server_ip, port, username, password))
+        cursor.execute('INSERT INTO servers (server_name, server_ip, port, username, password) VALUES (?, ?, ?, ?, ?)',(server_name, server_ip, port, username, password))
         conn.commit()
         conn.close()
 
@@ -231,12 +229,10 @@ def add_server():
         username_entry.delete(0, tk.END)
         password_entry.delete(0, tk.END)
 
-        messagebox.showinfo("Success", f"Server {
-                            server_name} added successfully!")
+        messagebox.showinfo("Success", f"Server {server_name} added successfully!")
 
     except Exception as e:
-        messagebox.showerror("Error", f"Failed to connect to {
-                             server_ip}: {str(e)}")
+        messagebox.showerror("Error", f"Failed to connect to {server_ip}: {str(e)}")
 # ----------------------------------------------------------------------------------------------------
 # 8-  Function to show the report window
 
@@ -246,8 +242,7 @@ def show_report_window():
     report_window.title("Report")
 
     tk.Label(report_window, text="From Date").pack()
-    from_date = DateEntry(report_window, width=12,
-                          background='darkblue', foreground='white', borderwidth=2)
+    from_date = DateEntry(report_window, width=12,background='darkblue', foreground='white', borderwidth=2)
     from_date.pack(padx=10, pady=10)
 
     tk.Label(report_window, text="To Date").pack()
@@ -264,8 +259,7 @@ def show_report_window():
     server_names = cursor.fetchall()
     conn.close()
 
-    server_combobox['values'] = ["All Servers"] + [name[0]
-                                                   for name in server_names]
+    server_combobox['values'] = ["All Servers"] + [name[0] for name in server_names]
     server_combobox.pack(pady=10)
 
     def generate_report():
@@ -285,8 +279,7 @@ def show_report_window():
             cursor.execute(
                 'SELECT * FROM your_report_table WHERE date_column BETWEEN ? AND ?', (start_date, end_date))
         else:
-            cursor.execute('SELECT * FROM your_report_table WHERE server_name = ? AND date_column BETWEEN ? AND ?',
-                           (selected_server, start_date, end_date))
+            cursor.execute('SELECT * FROM your_report_table WHERE server_name = ? AND date_column BETWEEN ? AND ?',(selected_server, start_date, end_date))
 
         reports = cursor.fetchall()
 
@@ -296,8 +289,7 @@ def show_report_window():
                 tk.END, "No reports found for the selected criteria.")
         else:
             # Create a DataFrame and save to Excel
-            df = pd.DataFrame(reports, columns=[
-                              'ID', 'Server Name', 'Total INbound', 'Total Outbound', 'Total PRI', 'Date', 'Date&TIME'])
+            df = pd.DataFrame(reports, columns=['ID', 'Server Name', 'Total INbound', 'Total Outbound', 'Total PRI', 'Date', 'Date&TIME'])
             excel_file = f'report_{selected_server.replace(" ", "_")}_{
                 start_date}.xlsx'  # Generate a filename
             df.to_excel(excel_file, index=False)
